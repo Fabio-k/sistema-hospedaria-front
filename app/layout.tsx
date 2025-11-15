@@ -25,8 +25,13 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background flex flex-col min-h-screen`}
       >
+        <div className="h-20 w-full flex items-center p-4 bg-white shadow sticky top-0">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Sistema de hospedaria
+          </h1>
+        </div>
         {children}
       </body>
     </html>
