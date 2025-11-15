@@ -82,8 +82,14 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center">
       <div className="bg-white rounded shadow mt-8 w-full max-w-6xl">
-        <div className="p-4 border-b">
+        <div className="p-4 border-b justify-between items-center flex">
           <h1 className="text-xl font-semibold">Hóspedes</h1>
+          <button
+            className="bg-primary text-white rounded px-4 py-2 cursor-pointer"
+            onClick={() => router.push("/hospedes/new")}
+          >
+            Novo hóspede
+          </button>
         </div>
 
         <div className="p-4">
