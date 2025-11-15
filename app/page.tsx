@@ -10,6 +10,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import axios from "axios";
 
 export default function Home() {
   const [hospedes, setHospedes] = useState<any[] | null>(null);
@@ -61,14 +62,12 @@ export default function Home() {
   }
 
   async function deleteHospede(id: string | number) {
-    if (!confirm("Confirma exclusão do hóspede?")) return;
     try {
-      const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const res = await fetch(`${base.replace(/\/+$/, "")}/hospedes/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setHospedes((prev) => prev?.filter((h) => h.id !== id) ?? null);
+      const res = await axios
+        .delete(`${process.env.NEXT_PUBLIC_API_URL}/hospede/${id}`)
+        .then((res) => {
+          setHospedes((prev) => prev?.filter((h) => h.id !== id) ?? null);
+        });
     } catch (err) {
       console.error("Failed to delete hospede", err);
       alert("Erro ao deletar hóspede");
