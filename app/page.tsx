@@ -75,7 +75,7 @@ export default function Home() {
   }
 
   function editHospede(id: string | number) {
-    router.push(`/hospedes/${id}/edit`);
+    router.push(`/hospedes/${id}/editar`);
   }
 
   return (
@@ -85,7 +85,7 @@ export default function Home() {
           <h1 className="text-xl font-semibold">Hóspedes</h1>
           <button
             className="bg-primary text-white rounded px-4 py-2 cursor-pointer"
-            onClick={() => router.push("/hospedes/new")}
+            onClick={() => router.push("/hospedes/novo")}
           >
             Novo hóspede
           </button>

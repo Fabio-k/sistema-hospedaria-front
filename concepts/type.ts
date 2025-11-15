@@ -1,5 +1,4 @@
 export type Hospede = {
-  id: number;
   nomeCompleto: string;
   email: string;
   telefone: string;
@@ -12,7 +11,6 @@ export type Hospede = {
   cidade: string;
   estado: string;
   pais: string;
-  status: HospedeStatus;
 };
 
 export type HospedeStatus = "ATIVO" | "INATIVO";
