@@ -3,6 +3,12 @@ export type Hospede = {
   email: string;
   telefone: string;
   cpf: string;
+  dataNascimento: string;
+  endereco: Endereco;
+  status: HospedeStatus;
+};
+
+export type Endereco = {
   cep: string;
   logradouro: string;
   bairro: string;
@@ -10,7 +16,6 @@ export type Hospede = {
   complemento: string;
   cidade: string;
   estado: string;
-  pais: string;
 };
 
 export type HospedeStatus = "ATIVO" | "INATIVO";

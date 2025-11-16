@@ -12,6 +12,7 @@ import ControlledField from "../ControlledField";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import ReturnButton from "@/components/ui/returnButton";
 
 const formSchema = z.object({
   nomeCompleto: z.string().min(2, {
@@ -147,8 +148,11 @@ function HospedeForm({
   });
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="bg-white rounded shadow mt-8 w-full max-w-6xl p-8">
+    <div className="flex flex-col items-center justify-center">
+      <div className="flex gap-2 items-center mb-4 w-full max-w-6xl mt-8 ">
+        <ReturnButton />
+      </div>
+      <div className="bg-white rounded shadow w-full max-w-6xl p-8">
         <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
         <form id="new-hospede-form" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>

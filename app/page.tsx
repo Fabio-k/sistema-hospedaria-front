@@ -113,7 +113,11 @@ export default function Home() {
               </TableHeader>
               <TableBody>
                 {hospedes.map((hospede) => (
-                  <TableRow key={hospede.id} className="cursor-pointer">
+                  <TableRow
+                    key={hospede.id}
+                    className="cursor-pointer"
+                    onClick={() => router.push(`/hospedes/${hospede.id}`)}
+                  >
                     <TableCell className="font-medium">
                       {hospede.nomeCompleto}
                     </TableCell>
@@ -125,21 +129,28 @@ export default function Home() {
                     <TableCell className="text-center">
                       <Switch
                         checked={hospede.status === "ATIVO"}
-                        onCheckedChange={() =>
-                          toggleStatus(hospede.id, hospede.status)
-                        }
+                        onClick={(e) => e.stopPropagation()}
+                        onCheckedChange={() => {
+                          toggleStatus(hospede.id, hospede.status);
+                        }}
                         className="cursor-pointer"
                       />
                     </TableCell>
                     <TableCell className="text-center space-x-2">
                       <button
-                        onClick={() => editHospede(hospede.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          editHospede(hospede.id);
+                        }}
                         className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
                       >
                         Editar
                       </button>
                       <button
-                        onClick={() => deleteHospede(hospede.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteHospede(hospede.id);
+                        }}
                         className="px-3 py-1 bg-red-500 text-white rounded text-sm"
                       >
                         Deletar
