@@ -11,21 +11,26 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import axios from "axios";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   const [hospedes, setHospedes] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
   const router = useRouter();
 
   async function getHospedes(): Promise<void> {
     try {
       setLoading(true);
-      const base = process.env.NEXT_PUBLIC_API_URL ?? "";
-      const res = await fetch(`${base.replace(/\/+$/, "")}/hospedes`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setHospedes(data);
+      const base = process.env.NEXT_PUBLIC_API_URL;
+      axios
+        .get(`${base}/hospedes`, {
+          params: {
+            termo: search,
+          },
+        })
+        .then((res) => setHospedes(res.data));
     } catch (err: any) {
       console.error("Failed to load hospedes", err);
       setError(err?.message ?? "Erro ao carregar hóspedes");
@@ -82,7 +87,21 @@ export default function Home() {
     <div className="flex flex-col items-center">
       <div className="bg-white rounded shadow mt-8 w-full max-w-6xl">
         <div className="p-4 border-b justify-between items-center flex">
-          <h1 className="text-xl font-semibold">Hóspedes</h1>
+          <div className="flex gap-4 items-center">
+            <h1 className="text-xl font-semibold">Hóspedes</h1>
+            <Input
+              type="text"
+              placeholder="nome"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key == "Enter") {
+                  getHospedes();
+                }
+              }}
+            />
+          </div>
+
           <button
             className="bg-primary text-white rounded px-4 py-2 cursor-pointer"
             onClick={() => router.push("/hospedes/novo")}
