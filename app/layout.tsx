@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { FiltroProvider } from "@/concepts/hospede/context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,7 @@ export default function RootLayout({
             Sistema de hospedaria
           </h1>
         </div>
-        {children}
+        <FiltroProvider>{children}</FiltroProvider>
       </body>
     </html>
   );

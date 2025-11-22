@@ -12,12 +12,16 @@ import {
 } from "@/components/ui/table";
 import axios from "axios";
 import { Input } from "@/components/ui/input";
+import FiltroHospede from "@/concepts/hospede/filtro";
+import { useFiltro } from "@/concepts/hospede/context";
 
 export default function Home() {
   const [hospedes, setHospedes] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const { idade, status } = useFiltro();
+
   const router = useRouter();
 
   async function getHospedes(): Promise<void> {
@@ -28,6 +32,9 @@ export default function Home() {
         .get(`${base}/hospedes`, {
           params: {
             termo: search,
+            minIdade: idade[0],
+            maxIdade: idade[1],
+            status: status.length > 0 ? status.join(",") : null,
           },
         })
         .then((res) => setHospedes(res.data));
@@ -41,7 +48,7 @@ export default function Home() {
 
   useEffect(() => {
     getHospedes();
-  }, []);
+  }, [idade, status]);
 
   async function toggleStatus(id: string | number, hospedeStatus: string) {
     const action = hospedeStatus === "ATIVO" ? "inativar" : "ativar";
@@ -100,6 +107,7 @@ export default function Home() {
                 }
               }}
             />
+            <FiltroHospede />
           </div>
 
           <button
