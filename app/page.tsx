@@ -14,6 +14,15 @@ import axios from "axios";
 import { Input } from "@/components/ui/input";
 import FiltroHospede from "@/concepts/hospede/filtro";
 import { useFiltro } from "@/concepts/hospede/context";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import usePagination from "@/concepts/context/paginationContext";
 
 export default function Home() {
   const [hospedes, setHospedes] = useState<any[] | null>(null);
@@ -21,6 +30,15 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const { idade, status } = useFiltro();
+  const {
+    page,
+    setPage,
+    hasPreviousPage,
+    hasNextPage,
+    fillData,
+    getDisplayPages,
+    totalCount,
+  } = usePagination();
 
   const router = useRouter();
 
@@ -35,9 +53,13 @@ export default function Home() {
             minIdade: idade[0],
             maxIdade: idade[1],
             status: status.length > 0 ? status.join(",") : null,
+            page: page,
           },
         })
-        .then((res) => setHospedes(res.data));
+        .then((res) => {
+          fillData(res.data);
+          setHospedes(res.data.content);
+        });
     } catch (err: any) {
       console.error("Failed to load hospedes", err);
       setError(err?.message ?? "Erro ao carregar hóspedes");
@@ -48,7 +70,7 @@ export default function Home() {
 
   useEffect(() => {
     getHospedes();
-  }, [idade, status]);
+  }, [idade, status, page]);
 
   async function toggleStatus(id: string | number, hospedeStatus: string) {
     const action = hospedeStatus === "ATIVO" ? "inativar" : "ativar";
@@ -108,6 +130,9 @@ export default function Home() {
               }}
             />
             <FiltroHospede />
+            <div className="flex-shrink-0">
+              <p>{totalCount} hóspedes encontrados</p>
+            </div>
           </div>
 
           <button
@@ -185,11 +210,59 @@ export default function Home() {
                     </TableCell>
                   </TableRow>
                 ))}
+                {hospedes.length < 10 &&
+                  Array.from({ length: 10 - hospedes.length }).map((_, i) => (
+                    <TableRow
+                      key={`placeholder-${i}`}
+                      className="invisible pointer-events-none"
+                    >
+                      <TableCell>
+                        <button className="px-3 py-1 bg-blue-500 text-white rounded text-sm">
+                          Editar
+                        </button>
+                      </TableCell>
+                      <TableCell>placeholder</TableCell>
+                      <TableCell>placeholder</TableCell>
+                      <TableCell>placeholder</TableCell>
+                      <TableCell>placeholder</TableCell>
+                      <TableCell>placeholder</TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           )}
         </div>
       </div>
+      <Pagination className="mt-4">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              isActive={hasPreviousPage}
+              onClick={() => setPage(page - 1)}
+            />
+          </PaginationItem>
+          {getDisplayPages().map((pagePagination) => (
+            <PaginationItem key={pagePagination}>
+              <PaginationLink
+                isActive={pagePagination === page}
+                onClick={() => setPage(pagePagination)}
+              >
+                {pagePagination}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <PaginationNext
+              isActive={hasNextPage}
+              onClick={() => {
+                if (hasNextPage) {
+                  setPage(page + 1);
+                }
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }
