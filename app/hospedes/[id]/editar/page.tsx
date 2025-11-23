@@ -1,6 +1,7 @@
 "use client";
 import HospedeForm from "@/concepts/hospede";
 import { Hospede } from "@/concepts/type";
+import { ERROR_MESSAGES, ErrorMessageKey } from "@/lib/utils";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -21,11 +22,40 @@ export default function editarHospede() {
       });
   }, [params]);
 
-  const handleSubmit = (data: any) => {
+  const handleSubmit = (data: any, form: any) => {
+    const {
+      id,
+      endereco: { hospedeId, ...enderecoSemHospede },
+      ...hospedeSemId
+    } = data;
+
+    const safeData = {
+      ...hospedeSemId,
+      endereco: enderecoSemHospede,
+    };
+
     axios
-      .patch(process.env.NEXT_PUBLIC_API_URL + "/hospede/" + params.id, data)
+      .patch(
+        process.env.NEXT_PUBLIC_API_URL + "/hospede/" + params.id,
+        safeData
+      )
       .then(function (response) {
         router.push("/");
+      })
+      .catch((error) => {
+        const messages = error.response.data.erros;
+        if (!messages || !Array.isArray(messages)) {
+          console.log(messages);
+          return;
+        }
+        for (const message of messages) {
+          const msg =
+            ERROR_MESSAGES[message.code as ErrorMessageKey] ??
+            ERROR_MESSAGES.generalError;
+          form.setError(message.field, {
+            message: msg,
+          });
+        }
       });
   };
 

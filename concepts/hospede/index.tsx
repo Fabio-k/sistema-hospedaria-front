@@ -139,11 +139,10 @@ function HospedeForm({
   title,
 }: {
   defaultValues?: any;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: any, form: any) => void;
   title: string;
 }) {
   const form = useForm({
-    resolver: zodResolver(formSchema),
     defaultValues: defaultValues,
   });
 
@@ -154,7 +153,10 @@ function HospedeForm({
       </div>
       <div className="bg-white rounded shadow w-full max-w-6xl p-8">
         <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-        <form id="new-hospede-form" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          id="new-hospede-form"
+          onSubmit={form.handleSubmit((data) => onSubmit(data, form))}
+        >
           <FieldGroup>
             <FieldSet>
               <FieldLegend>Dados Pessoais</FieldLegend>
