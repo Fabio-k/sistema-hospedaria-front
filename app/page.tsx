@@ -120,7 +120,7 @@ export default function Home() {
             <h1 className="text-xl font-semibold">Hóspedes</h1>
             <Input
               type="text"
-              placeholder="nome"
+              placeholder="pesquisar"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => {
