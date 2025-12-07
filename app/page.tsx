@@ -10,7 +10,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import axios from "axios";
 import { Input } from "@/components/ui/input";
 import FiltroHospede from "@/concepts/hospede/filtro";
 import { useFiltro } from "@/concepts/hospede/context";
@@ -24,12 +23,14 @@ import {
 } from "@/components/ui/pagination";
 import usePagination from "@/concepts/context/paginationContext";
 import { useSistemaHospedariaApi } from "@/utils/sistemaHospedariaApi";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
   const [hospedes, setHospedes] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const { data: session, status: loginStatus } = useSession();
   const { idade, status } = useFiltro();
   const {
     page,
@@ -71,21 +72,18 @@ export default function Home() {
   }
 
   useEffect(() => {
-    getHospedes();
-  }, [idade, status, page]);
+    if(loginStatus === "authenticated" && session?.accessToken) {
+      getHospedes();
+    }
+  }, [idade, status, page, loginStatus, session?.accessToken]);
 
   async function toggleStatus(id: string | number, hospedeStatus: string) {
     const action = hospedeStatus === "ATIVO" ? "inativar" : "ativar";
     const targetStatus = hospedeStatus === "ATIVO" ? "INATIVO" : "ATIVO";
 
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/hospede/${id}/${action}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      await api.patch(
+        `/hospede/${id}/${action}`);
       setHospedes(
         (prev) =>
           prev?.map((h) =>
@@ -99,8 +97,8 @@ export default function Home() {
 
   async function deleteHospede(id: string | number) {
     try {
-      const res = await axios
-        .delete(`${process.env.NEXT_PUBLIC_API_URL}/hospede/${id}`)
+      const res = await api
+        .delete(`/hospede/${id}`)
         .then((res) => {
           setHospedes((prev) => prev?.filter((h) => h.id !== id) ?? null);
         });

@@ -6,19 +6,25 @@ import { Hospede } from "@/concepts/type";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSistemaHospedariaApi } from "@/utils/sistemaHospedariaApi";
+import { useSession } from "next-auth/react";
 
 export default function Page() {
   const [hospede, setHospede] = useState<Hospede | null>(null);
+  const api = useSistemaHospedariaApi();
+  const {data: session, status: loginStatus} = useSession();
 
   const params = useParams();
   useEffect(() => {
     const id = params.id;
-    axios
+    if(loginStatus === "authenticated" && session?.accessToken) {
+    api
       .get(process.env.NEXT_PUBLIC_API_URL + "/hospede/" + id)
       .then(function (response) {
         setHospede(response.data);
       });
-  }, [params]);
+    }
+  }, [params, session?.accessToken, loginStatus]);
 
   return (
     <div className="flex flex-col items-center justify-center my-8">

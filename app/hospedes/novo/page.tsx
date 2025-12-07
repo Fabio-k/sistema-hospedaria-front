@@ -3,13 +3,14 @@
 import HospedeForm from "@/concepts/hospede";
 import { Hospede } from "@/concepts/type";
 import { ERROR_MESSAGES, ErrorMessageKey } from "@/lib/utils";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSistemaHospedariaApi } from "@/utils/sistemaHospedariaApi";
 
 export default function NovoHospede() {
   const router = useRouter();
+  const api = useSistemaHospedariaApi();
   function onSubmit(data: Hospede, form: any) {
-    axios
+    api
       .post(process.env.NEXT_PUBLIC_API_URL + "/hospede", data)
       .then(function (response) {
         router.push("/");
