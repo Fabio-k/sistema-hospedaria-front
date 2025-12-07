@@ -8,7 +8,19 @@ const handler = NextAuth({
     clientSecret: process.env.KEYCLOAK_SECRET!,
     issuer: process.env.KEYCLOAK_ISSUER!,
   })
-  ]
+  ],
+  callbacks: {
+  async jwt({ token, account }) {
+    if (account) {
+      token.accessToken = account.access_token
+    }
+    return token
+  },
+  async session({ session, token, user }) {
+    session.accessToken = token.accessToken ?? "";
+    return session
+  }
+} 
 })
 
 export const GET = handler;

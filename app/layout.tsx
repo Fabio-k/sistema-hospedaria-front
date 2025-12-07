@@ -4,6 +4,8 @@ import "./globals.css";
 import { FiltroProvider } from "@/concepts/hospede/context";
 import { PaginationPrevious } from "@/components/ui/pagination";
 import { PaginationProvider } from "@/concepts/context/paginationContext";
+import Providers from "./providers";
+import { Navbar } from "@/concepts/navigation/organism/navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,13 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background flex flex-col min-h-screen pb-8`}
       >
-        <div className="h-20 w-full flex items-center p-4 bg-white shadow sticky top-0">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Sistema de hospedaria
-          </h1>
-        </div>
         <PaginationProvider>
-          <FiltroProvider>{children}</FiltroProvider>
+          <Providers>
+              <Navbar />
+              <FiltroProvider>{children}</FiltroProvider>
+          </Providers>
         </PaginationProvider>
       </body>
     </html>

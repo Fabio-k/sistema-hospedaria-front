@@ -23,6 +23,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import usePagination from "@/concepts/context/paginationContext";
+import { useSistemaHospedariaApi } from "@/utils/sistemaHospedariaApi";
 
 export default function Home() {
   const [hospedes, setHospedes] = useState<any[] | null>(null);
@@ -42,12 +43,13 @@ export default function Home() {
 
   const router = useRouter();
 
+  const api = useSistemaHospedariaApi();
+
   async function getHospedes(): Promise<void> {
     try {
       setLoading(true);
-      const base = process.env.NEXT_PUBLIC_API_URL;
-      axios
-        .get(`${base}/hospedes`, {
+      api
+        .get(`/hospedes`, {
           params: {
             termo: search,
             minIdade: idade[0],
