@@ -32,6 +32,7 @@ const handler = NextAuth({
   },
   async session({ session, token, user }) {
     session.accessToken = token.accessToken ?? "";
+    session.refreshToken = token.refreshToken ?? "";
     session.roles = token.roles;
     return session
   }
