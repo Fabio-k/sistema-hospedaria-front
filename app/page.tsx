@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -45,6 +45,14 @@ export default function Home() {
   const router = useRouter();
 
   const api = useSistemaHospedariaApi();
+
+  const isPermitted = useMemo(() => {
+    return {
+      editHospede: session?.roles?.includes("hospede:edit") ?? false,
+      editStatus: session?.roles?.includes("hospede:status") ?? false,
+      delete: session?.roles?.includes("hospede:delete") ?? false,
+    }
+  }, [session?.roles])
 
   async function getHospedes(): Promise<void> {
     try {
@@ -181,6 +189,7 @@ export default function Home() {
                     <TableCell className="text-center">
                       <Switch
                         checked={hospede.status === "ATIVO"}
+                        disabled={!isPermitted.editStatus}
                         onClick={(e) => e.stopPropagation()}
                         onCheckedChange={() => {
                           toggleStatus(hospede.id, hospede.status);
@@ -189,6 +198,7 @@ export default function Home() {
                       />
                     </TableCell>
                     <TableCell className="text-center space-x-2">
+                      {isPermitted.editHospede && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -198,15 +208,18 @@ export default function Home() {
                       >
                         Editar
                       </button>
-                      <button
+                      )}
+                      {isPermitted.delete && (
+                        <button
                         onClick={(e) => {
                           e.stopPropagation();
                           deleteHospede(hospede.id);
                         }}
-                        className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                        className="px-3 py-1 bg-red-500 disabled:opacity-50 text-white rounded text-sm"
                       >
                         Deletar
                       </button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

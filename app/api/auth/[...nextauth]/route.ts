@@ -1,5 +1,6 @@
 import NextAuth from "next-auth"
 import KeycloakProvider from "next-auth/providers/keycloak";
+import { decodeJwt } from "jose";
 
 const handler = NextAuth({
   providers: [
@@ -15,6 +16,11 @@ const handler = NextAuth({
       token.accessToken = account.access_token
       token.accessTokenExpires = account.expires_at! * 1000
       token.refreshToken = account.refresh_token!
+
+      const decoded: any = decodeJwt(token.accessToken!)
+      
+      token.roles = decoded.realm_access?.roles || [];
+
       return token;
     }
 
@@ -26,6 +32,7 @@ const handler = NextAuth({
   },
   async session({ session, token, user }) {
     session.accessToken = token.accessToken ?? "";
+    session.roles = token.roles;
     return session
   }
 } 
