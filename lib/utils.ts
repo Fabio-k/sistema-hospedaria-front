@@ -22,6 +22,9 @@ export const ERROR_MESSAGES = {
   "dataNascimento.obrigatorio": "A data de nascimento é obrigatória.",
   "cpf.jaUsado": "O CPF ja foi utilizado.",
   "cpf.formatoInvalido": "O CPF deve ser válido",
+
+  "email.jaUsado": "O e-mail já foi utilizado.",
+  "email.formatoInvalido": "O e-mail deve ser válido.",
   generalError: "Algo deu errado, tente novamente.",
 } as const satisfies Record<string, string>;
 
