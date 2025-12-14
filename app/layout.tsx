@@ -6,6 +6,7 @@ import { PaginationPrevious } from "@/components/ui/pagination";
 import { PaginationProvider } from "@/concepts/context/paginationContext";
 import Providers from "./providers";
 import { Navbar } from "@/concepts/navigation/organism/navbar";
+import SessionGuard from "./sessionGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,10 +34,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background flex flex-col min-h-screen pb-8`}
       >
         <PaginationProvider>
-          <Providers>
-              <Navbar />
-              <FiltroProvider>{children}</FiltroProvider>
-          </Providers>
+            <Providers>
+              <SessionGuard>
+                <Navbar />
+                <FiltroProvider>{children}</FiltroProvider>
+                </SessionGuard>
+            </Providers>
         </PaginationProvider>
       </body>
     </html>

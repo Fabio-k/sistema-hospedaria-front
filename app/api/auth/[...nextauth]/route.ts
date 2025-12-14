@@ -56,12 +56,17 @@ const handler = NextAuth({
       token.refreshToken = refreshedToken.refresh_token!;
     }
 
+    if(refreshedToken == null) {
+      token.error = "Refresh token failed";
+    }
+
     return token;
   },
   async session({ session, token, user }) {
     session.accessToken = token.accessToken ?? "";
     session.refreshToken = token.refreshToken ?? "";
     session.roles = token.roles;
+    session.error = token.error;
     return session
   }
 } 
