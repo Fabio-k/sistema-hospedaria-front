@@ -7,6 +7,8 @@ interface FiltroContextValue {
   setIdade: (idade: number[]) => void;
   status: string[];
   setStatus: (status: string[]) => void;
+  showRemoved: boolean;
+  setShowRemoved: (showRemoved: boolean) => void;
 }
 
 const FiltroContext = createContext<FiltroContextValue | undefined>(undefined);
@@ -20,8 +22,9 @@ export function useFiltro() {
 export function FiltroProvider({ children }: { children: React.ReactNode }) {
   const [idade, setIdade] = useState<number[]>([18, 80]);
   const [status, setStatus] = useState<string[]>(["ATIVO", "INATIVO"]);
+  const [showRemoved, setShowRemoved] = useState<boolean>(false);
   return (
-    <FiltroContext.Provider value={{ idade, setIdade, status, setStatus }}>
+    <FiltroContext.Provider value={{ idade, setIdade, status, setStatus, showRemoved, setShowRemoved }}>
       {children}
     </FiltroContext.Provider>
   );

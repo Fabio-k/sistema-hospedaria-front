@@ -8,19 +8,23 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { useEffect, useState } from "react";
 import { useFiltro } from "../context";
+import { Switch } from "@/components/ui/switch";
+import AuthorizationGuard from "@/app/authorizationGuard";
 
 const FiltroHospede = () => {
   const [range, setRange] = useState<number[]>([18, 80]);
   const [checkedStatus, setCheckedStatus] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(false);
-  const { idade, status, setIdade, setStatus } = useFiltro();
+  const { idade, status, setIdade, setStatus, showRemoved, setShowRemoved } = useFiltro();
+  const [toggleShowRemoved, setToggleShowRemoved] = useState(false);
 
   useEffect(() => {
     if (open) {
       setRange(idade ?? [18, 80]);
       setCheckedStatus(status ?? []);
+      setToggleShowRemoved(showRemoved);
     }
-  }, [open, idade, status]);
+  }, [open, idade, status, showRemoved]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -81,17 +85,29 @@ const FiltroHospede = () => {
             </div>
           </div>
         </div>
+        <AuthorizationGuard necessaryRoles={["hospede:view:deleted"]}>
+          <div className="mt-4">
+            <p>Exibir Hospedes Removidos</p>
+            <Switch
+              checked={toggleShowRemoved}
+              onCheckedChange={(e: boolean) => {
+                setToggleShowRemoved(e);
+              }}
+            />
+          </div>
+        </AuthorizationGuard>
         <div className="flex mt-4">
-          <Button
-            onClick={() => {
-              setIdade(range);
-              setStatus(checkedStatus);
-              setOpen(false);
-            }}
-          >
-            Aplicar
-          </Button>
-        </div>
+                <Button
+                  onClick={() => {
+                    setIdade(range);
+                    setStatus(checkedStatus);
+                    setShowRemoved(toggleShowRemoved);
+                    setOpen(false);
+                  }}
+                >
+                  Aplicar
+                </Button>
+            </div>
       </PopoverContent>
     </Popover>
   );

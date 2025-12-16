@@ -31,7 +31,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const { data: session, status: loginStatus } = useSession();
-  const { idade, status } = useFiltro();
+  const { idade, status, showRemoved } = useFiltro();
   const {
     page,
     setPage,
@@ -51,6 +51,7 @@ export default function Home() {
       editHospede: session?.roles?.includes("hospede:edit") ?? false,
       editStatus: session?.roles?.includes("hospede:status") ?? false,
       delete: session?.roles?.includes("hospede:delete") ?? false,
+      viewDeleted: session?.roles?.includes("hospede:view:deleted") ?? false,
     }
   }, [session?.roles])
 
@@ -63,6 +64,7 @@ export default function Home() {
             termo: search,
             minIdade: idade[0],
             maxIdade: idade[1],
+            includeDeleted: showRemoved,
             status: status.length > 0 ? status.join(",") : null,
             page: page,
           },
@@ -83,7 +85,7 @@ export default function Home() {
     if(loginStatus === "authenticated" && session?.accessToken) {
       getHospedes();
     }
-  }, [idade, status, page, loginStatus, session?.accessToken]);
+  }, [idade, status, page, showRemoved, loginStatus, session?.accessToken]);
 
   async function toggleStatus(id: string | number, hospedeStatus: string) {
     const action = hospedeStatus === "ATIVO" ? "inativar" : "ativar";
